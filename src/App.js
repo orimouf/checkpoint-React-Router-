@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import './App.css';
 import MovieCard from './Components/MovieCard'
-import AddMovie from './Components/AddMovie'
 import Search from './Components/Search'
 
 const Data = [{
@@ -28,10 +27,11 @@ const Data = [{
 
 function App() {
 
-  let errorMsg = '';
-  const [title, setTitle] = useState("");
-  const [poster, setPoster] = useState("");
-  const [rating, setRating] = useState(0);
+  let errorStyle = 'background: #ff000021;box-shadow: 0 0 4px #f44336;';
+  const titleRef = useRef("");
+  const posterRef = useRef("");
+  const ratingRef = useRef(0);
+  const statusRef = useRef("");
   const [addMovie, setAddMovie] = useState(false);
   const [search, setSearch] = useState("");
   const [filteredMovies, setFilteredMovies] = useState([]);
@@ -39,56 +39,67 @@ function App() {
 
   useEffect(() => {
     setFilteredMovies(
-      Data.filter((ele) =>
-        ele.title.toLowerCase().includes(search.toLowerCase())
-      )
+      Data.filter((ele) => {
+        return (Number.isNaN(parseInt(search))) ?
+          ele.title.toLowerCase().includes(search.toLowerCase()) :
+          ele.rating === parseInt(search)
+      })
     );
   },[search]);
 
   const handleAdd = () => {
     setAddMovie(!addMovie)
   }
+  const resetAdd = () => {
+    setButtonAdd(!buttonAdd)
+  }
 
   useEffect( function addNewMovie() {
-    let checkRating = (rating < 1 || rating > 5) ? false : true;
-    let checkPoster = (poster === "") ? false : true;
-    let checkTitle = (title === "") ? false : true;
-
-    if(checkRating && checkPoster && checkTitle) {
-      let newMovie = {
-        "title": title,
-        "poster": poster,
-        "rating": rating
-      };
-      Data.push(newMovie)
-      handleAdd()
-    } else {
-      errorMsg = (!checkRating) ? 'Enter a number between (1-5)' : 
-                 (!checkPoster) ? 'Enter the link of the poster' :
-                 (!checkTitle) ? 'Enter the title of the movie' : ''
-                 console.log(errorMsg);
+    if(addMovie) {
+      const titleElement = titleRef.current.value;
+      const posterElement = posterRef.current.value;
+      const ratingElement = ratingRef.current.value;
+      
+      if(titleElement !== '' && posterElement !== '' && ratingElement !== '') {
+        if(ratingElement < 1 || ratingElement > 5){
+          ratingRef.current.style = errorStyle;
+          statusRef.current.innerHTML = 'Enter a number between (1-5)';
+          statusRef.current.className = 'errorMsg';
+        } else {
+          let newMovie = {
+            "title": titleElement,
+            "poster": posterElement,
+            "rating": ratingElement
+          };
+          Data.push(newMovie);
+          handleAdd();
+          resetAdd();
+        }
+      } else {
+        // error handling
+        titleRef.current.style = '';
+        posterRef.current.style = '';
+        ratingRef.current.style = '';
+        if(buttonAdd !== false){
+          if(titleElement === ''){
+            titleRef.current.style = errorStyle;
+            statusRef.current.innerHTML = 'Enter a number between (1-5)';
+            statusRef.current.className = 'errorMsg';
+          }
+          if(posterElement === ''){
+            posterRef.current.style = errorStyle;
+            statusRef.current.innerHTML = 'Enter the link of the poster';
+            statusRef.current.className = 'errorMsg';
+          }
+          if(ratingElement === ''){
+            ratingRef.current.style = errorStyle;
+            statusRef.current.innerHTML = 'Enter the title of the movie';
+            statusRef.current.className = 'errorMsg';
+          }
+        }
+      }
     }
   });
-  // const addNewMovie = () => {
-  //   let checkRating = (rating < 1 || rating > 5) ? false : true;
-  //   let checkPoster = (poster === "") ? false : true;
-  //   let checkTitle = (title === "") ? false : true;
-
-  //   if(checkRating && checkPoster && checkTitle) {
-  //     let newMovie = {
-  //       "title": title,
-  //       "poster": poster,
-  //       "rating": rating
-  //     };
-  //     Data.push(newMovie)
-  //     handleAdd()
-  //   } else {
-  //     errorMsg = (!checkRating) ? 'Enter a number between (1-5)' : 
-  //                (!checkPoster) ? 'Enter the link of the poster' :
-  //                (!checkTitle) ? 'Enter the title of the movie' : ''
-  //                console.log(errorMsg);
-  //   }
-  // }
 
   return (
     <div className="App">
@@ -112,19 +123,16 @@ function App() {
           <div className="grid-2 border-add">
             <h1>Add new movie</h1>
             <input type="text" className="add-title" 
-            placeholder="Enter the title of the movie" onChange={(e) => setTitle(e.target.value)}/>
+            placeholder="Enter the title of the movie" ref={titleRef} />
             <input type="text" className="add-poster" 
-            placeholder="Enter the link of the poster" onChange={(e) => setPoster(e.target.value)}/>
+            placeholder="Enter the link of the poster" ref={posterRef} />
             <input type="number" max="5" min="1" className="add-rating"
-            placeholder="Enter the rating from 1 to 5" onChange={(e) => setRating(e.target.value)}/>
+            placeholder="Enter the rating from 1 to 5" ref={ratingRef} />
+            <span ref={statusRef} ></span>
             <div>
               <button onClick={setButtonAdd}>Add</button>
               <button onClick={handleAdd}>Cancel</button>
             </div>
-            {
-              (errorMsg !== '') ? <span className="error-show">{errorMsg}</span> : ''
-            }
-            
           </div>
         </div>
       }

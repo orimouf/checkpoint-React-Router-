@@ -70,3 +70,12 @@ header {
   border-radius: 4px;
   padding: 20px;
 }
+.errorMsg {
+  box-shadow: 0 0 4px #f44336;
+  padding: 8px;
+  border-radius: 4px;
+  border: 0;
+  grid-column: 2;
+  background-color: #f44336d4;
+  color: white;
+}

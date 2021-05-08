@@ -21,9 +21,19 @@ const Home = (props) =>  {
               </Link>
               ))
             }
-          <div className="movie-card add-movie">
+          {/* <div className="movie-card add-movie">
             <button className="add-button" onClick={props.handleAdd}>+</button>
-          </div>
+          </div> */}
+          <div className="movie-card">
+            
+            <div className="poster grid add-movie-flex">
+              <div className="title">
+                  <h1 style={{color: "#717c7c"}}>Add New Movie</h1>
+              </div>
+              <button className="add-button" onClick={props.handleAdd}>+</button>
+            </div>
+            
+        </div>
         </div>
     )
 }

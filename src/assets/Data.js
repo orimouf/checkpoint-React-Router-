@@ -30,6 +30,30 @@ const Data = [
       "trailer": "https://www.youtube.com/embed/YoHD9XEInc0",
       "rating": 4,
       "description": "Initiation or Transplant is a 2010 science fiction movie written, directed and produced by Christopher Nolan. The film stars Leonardo DiCaprio, Ken Watanabe, Joseph Gordon-Levitt, Marion Cotillard, Ellen Page, Cillian Murphy, Tom Hardy, Delibi Rao, Tom Bringer and Michael Kane."
+    },
+    {
+      "id": "5",
+      "title": "Tenet",
+      "poster": "https://i.pinimg.com/564x/d6/47/a6/d647a69163516f065aab57e4e2a180a9.jpg",
+      "trailer": "https://www.youtube.com/embed/L3pk_TBkihU",
+      "rating": 3,
+      "description": "Tenet is an action, thriller, and science fiction film written and directed by Christopher Nolan. Starring John David Washington, Robert Pattinson, Elizabeth Debicki, Dimple Kapadia, Michael Kane and Kenneth Branagh. The film was released in some countries in August 2020"
+    },
+    {
+      "id": "6",
+      "title": "Joker",
+      "poster": "https://i.pinimg.com/564x/96/dd/cd/96ddcd1b228b6be1b90d48a213f2f2ad.jpg",
+      "trailer": "https://www.youtube.com/embed/zAGVQLHvwOY",
+      "rating": 2,
+      "description": "Joker is a 2019 American psychological thriller film directed by Todd Phillips, who co-wrote the script with Scott Silver. The movie, which is based on the DC Comics character of the same name, stars Joaquin Phoenix as the Joker."
+    },
+    {
+      "id": "7",
+      "title": "Breaking Bad",
+      "poster": "https://i.pinimg.com/564x/2b/db/f4/2bdbf4630e18046e08f10ec5231f3f93.jpg",
+      "trailer": "https://www.youtube.com/embed/HhesaQXLuRY",
+      "rating": 1,
+      "description": "Stray Dysfunction, Turning Bad, or Breaking Bad is an American crime drama series written and produced by Vince Gilligan. Filmed and produced in Albuquerque, New Mexico"
     }
   ];
 

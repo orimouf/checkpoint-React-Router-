@@ -1,12 +1,10 @@
-body {
-  background-color: #e5e5e5;
-}
 .App {
   text-align: center;
 }
 .grid-1 {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: min-content;
   gap: 20px;
 }
 header {

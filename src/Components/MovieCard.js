@@ -6,7 +6,7 @@ const MovieCard = (props) => {
 
     return (
         <div className="movie-card">
-            <div style={{fontSize: "xx-large"}}>
+            <div className="rating-box">
                 <StarRatingComponent name="rate" editing={false}
                     starCount={5} value={props.rating} emptyStarColor={"white"}/>
             </div>

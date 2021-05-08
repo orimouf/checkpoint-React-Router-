@@ -1,40 +1,20 @@
 import React, { useRef, useState, useEffect } from "react";
+import { Switch, Route } from 'react-router-dom';
 import './App.css';
-import MovieCard from './Components/MovieCard'
 import Search from './Components/Search'
-
-const Data = [
-  {
-    "title": "V for Vandetta",
-    "poster": "http://i.ebayimg.com/00/s/NTAwWDMzMw==/z/VIsAAOxyaTxTWIqs/$_3.JPG?set_id=2",
-    "rating": 5,
-    "description": "In a futuristic, totalitarian Britain, a freedom fighter known simply as V, uses terrorist tactics to fight the oppressive society. Evey aids him in his mission to bring down the government."
-  },
-  {
-    "title": "The Detachement",
-    "poster": "https://www.joblo.com/assets/images/oldsite/posters/images/full/detachment-french-poster.jpg",
-    "rating": 4,
-    "description": "Henry Barthes (Adrien Brody) is a substitute teacher who shuns emotional connections, and never stays long enough in one district to bond with his students or colleagues. "
-  },
-  {
-    "title": "The experiment",
-    "poster": "https://images-na.ssl-images-amazon.com/images/I/51UFOnvEviL.jpg",
-    "rating": 5,
-    "description": "Twenty-six subjects are chosen to participate in a psychological experiment. While one group plays the role of prison guards, the others play inmates. Can the guards maintain order when mutiny erupts?"
-  },
-  {
-    "title": "Inception",
-    "poster": "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SY1000_CR0,0,675,1000_AL_.jpg",
-    "rating": 4,
-    "description": "Initiation or Transplant is a 2010 science fiction movie written, directed and produced by Christopher Nolan. The film stars Leonardo DiCaprio, Ken Watanabe, Joseph Gordon-Levitt, Marion Cotillard, Ellen Page, Cillian Murphy, Tom Hardy, Delibi Rao, Tom Bringer and Michael Kane."
-  }
-];
+import Home from './Components/Pages/Home'
+import Movies from './Components/Pages/Movies'
+import 'semantic-ui-css/semantic.min.css'
+import Data from './assets/Data'
+import Footer from './Components/Footer'
 
 function App() {
 
   let errorStyle = 'background: #ff000021;box-shadow: 0 0 4px #f44336;';
   const titleRef = useRef("");
   const posterRef = useRef("");
+  const trailerRef = useRef("");
+  const descriptionRef = useRef("");
   const ratingRef = useRef(0);
   const statusRef = useRef("");
   const [addMovie, setAddMovie] = useState(false);
@@ -63,18 +43,23 @@ function App() {
     if(addMovie) {
       const titleElement = titleRef.current.value;
       const posterElement = posterRef.current.value;
-      const ratingElement = ratingRef.current.value;
+      const trailerElement = trailerRef.current.value;
+      const descriptionElement = descriptionRef.current.value;
+      const ratingElement = parseInt(ratingRef.current.value);
       
-      if(titleElement !== '' && posterElement !== '' && ratingElement !== '') {
+      if(titleElement !== '' && posterElement !== '' && ratingElement !== ''&& descriptionElement !== '' && trailerElement !== '') {
         if(ratingElement < 1 || ratingElement > 5){
           ratingRef.current.style = errorStyle;
           statusRef.current.innerHTML = 'Enter a number between (1-5)';
           statusRef.current.className = 'errorMsg';
         } else {
           let newMovie = {
+            "id": (Data.length+1).toString(),
             "title": titleElement,
             "poster": posterElement,
-            "rating": ratingElement
+            "trailer": trailerElement,
+            "rating": ratingElement,
+            "description": descriptionElement
           };
           Data.push(newMovie);
           handleAdd();
@@ -84,6 +69,8 @@ function App() {
         // error handling
         titleRef.current.style = '';
         posterRef.current.style = '';
+        trailerRef.current.style = '';
+        descriptionRef.current.style = 'height:130px;';
         ratingRef.current.style = '';
         if(buttonAdd !== false){
           if(titleElement === ''){
@@ -96,34 +83,39 @@ function App() {
             statusRef.current.innerHTML = 'Enter the link of the poster';
             statusRef.current.className = 'errorMsg';
           }
-          if(ratingElement === ''){
+          if(ratingElement === '' || isNaN){
             ratingRef.current.style = errorStyle;
             statusRef.current.innerHTML = 'Enter the title of the movie';
+            statusRef.current.className = 'errorMsg';
+          }
+          if(trailerElement === ''){
+            trailerRef.current.style = errorStyle;
+            statusRef.current.innerHTML = 'Enter the link of the trailer';
+            statusRef.current.className = 'errorMsg';
+          }
+          if(descriptionElement === ''){
+            descriptionRef.current.style = errorStyle + "height:130px;";
+            statusRef.current.innerHTML = 'Enter the Description';
             statusRef.current.className = 'errorMsg';
           }
         }
       }
     }
   });
-
+  
   return (
     <div className="App">
       <header>
         <Search onChange={(e) => setSearch(e.target.value)} />
       </header>
       {(!addMovie) ?
-        <div className="main grid-1">
-          {(search !== "") ?
-            filteredMovies.map((ele) => (
-              <MovieCard title={ele.title} poster={ele.poster} rating={ele.rating} />))
-              :
-            Data.map((ele) => (
-              <MovieCard title={ele.title} poster={ele.poster} rating={ele.rating} />))
-          }
-          <div className="movie-card add-movie">
-            <button className="add-button" onClick={handleAdd}>+</button>
-          </div>
-        </div> :
+        <Switch>
+          <Route exact path="/">
+            <Home search={search} filteredMovies={filteredMovies} handleAdd={handleAdd} path="/"/> 
+          </Route>
+          <Route path="/Movies/:id" component={Movies}/>         
+        </Switch>
+        :
         <div className="main">
           <div className="grid-2 border-add">
             <h1>Add new movie</h1>
@@ -131,8 +123,12 @@ function App() {
             placeholder="Enter the title of the movie" ref={titleRef} />
             <input type="text" className="add-poster" 
             placeholder="Enter the link of the poster" ref={posterRef} />
+            <input type="text" className="add-trailer" 
+            placeholder="Enter the link of the trailer" ref={trailerRef} />
             <input type="number" max="5" min="1" className="add-rating"
             placeholder="Enter the rating from 1 to 5" ref={ratingRef} />
+            <textarea className="add-description" style={{height:"130px"}}
+            placeholder="Enter the Description" ref={descriptionRef} ></textarea>
             <span ref={statusRef} ></span>
             <div>
               <button onClick={setButtonAdd}>Add</button>
@@ -141,6 +137,7 @@ function App() {
           </div>
         </div>
       }
+      <Footer />
       
     </div>
   );
